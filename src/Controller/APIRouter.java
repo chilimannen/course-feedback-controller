@@ -40,30 +40,32 @@ public class APIRouter {
         if (authorized(context)) {
             Voting voting = (Voting) Serializer.unpack(request.getJsonObject("voting"), Voting.class);
 
-            vertx.createHttpClient().post(Configuration.MASTER_PORT, "localhost", "/api/create", handler -> {
-                if (handler.statusCode() == HttpResponseStatus.OK.code()) {
+            future.setHandler(result -> {
+                try {
+                    if (result.succeeded()) {
+                        response.setStatusCode(HttpResponseStatus.OK.code()).end();
+                        notifyMasterVoteCreated(voting);
+                    } else
+                        throw future.cause();
 
-                    future.setHandler(result -> {
-                        try {
-                            if (result.succeeded()) {
-                                response.setStatusCode(HttpResponseStatus.OK.code()).end();
-                            } else
-                                throw future.cause();
-
-                        } catch (Throwable throwable) {
-                            response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
-                        }
-                    });
-                    votings.create(future, voting);
-                } else {
+                } catch (Throwable throwable) {
                     response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
                 }
-            }).end(new JsonObject()
-                    .put("token", getServerToken())
-                    .put("voting", Serializer.pack(voting))
-                    .encode());
+            });
+            votings.create(future, voting);
+        } else {
+            response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
         }
     }
+
+    private void notifyMasterVoteCreated(Voting voting) {
+        vertx.createHttpClient().post(Configuration.MASTER_PORT, "localhost", "/api/create", handler -> {
+        }).end(new JsonObject()
+                .put("token", getServerToken())
+                .put("voting", Serializer.pack(voting))
+                .encode());
+    }
+
 
     private void terminate(RoutingContext context) {
         HttpServerResponse response = context.response();
@@ -73,32 +75,30 @@ public class APIRouter {
         if (authorized(context)) {
             Voting voting = (Voting) Serializer.unpack(request.getJsonObject("voting"), Voting.class);
 
-            vertx.createHttpClient().post(Configuration.MASTER_PORT, "localhost", "/api/terminate", handler -> {
-                if (handler.statusCode() == HttpResponseStatus.OK.code()) {
-                    future.setHandler(result -> {
-                        try {
-                            if (result.succeeded()) {
-                                response.setStatusCode(HttpResponseStatus.OK.code()).end();
-                            } else
-                                throw result.cause();
+            future.setHandler(result -> {
+                try {
+                    if (result.succeeded()) {
+                        response.setStatusCode(HttpResponseStatus.OK.code()).end();
+                        notifyMasterVoteTerminated(voting);
+                    } else
+                        throw result.cause();
 
-                        } catch (Throwable throwable) {
-                            response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
-                        }
-                    });
-                    votings.terminate(future, voting.getOwner());
-                } else {
+                } catch (Throwable throwable) {
                     response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
                 }
-            }).end(
-                    new JsonObject()
-                            .put("token", getServerToken())
-                            .put("voting", Serializer.pack(voting))
-                            .encode()
-            );
-
-
+            });
+            votings.terminate(future, voting.getOwner());
         }
+    }
+
+    private void notifyMasterVoteTerminated(Voting voting) {
+        vertx.createHttpClient().post(Configuration.MASTER_PORT, "localhost", "/api/terminate", handler -> {
+        }).end(
+                new JsonObject()
+                        .put("token", getServerToken())
+                        .put("voting", Serializer.pack(voting))
+                        .encode()
+        );
     }
 
     private void list(RoutingContext context) {
