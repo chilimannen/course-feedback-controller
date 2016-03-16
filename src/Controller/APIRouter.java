@@ -37,8 +37,6 @@ public class APIRouter {
         JsonObject request = context.getBodyAsJson();
         Future<Void> future = Future.future();
 
-        System.out.println(context.getBodyAsString());
-
         if (authorized(context)) {
             Voting voting = (Voting) Serializer.unpack(request.getJsonObject("voting"), Voting.class);
 
@@ -60,7 +58,10 @@ public class APIRouter {
                 } else {
                     response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
                 }
-            }).end(/** todo add payload */);
+            }).end(new JsonObject()
+                    .put("token", getServerToken())
+                    .put("voting", Serializer.pack(voting))
+                    .encode());
         }
     }
 
@@ -89,7 +90,12 @@ public class APIRouter {
                 } else {
                     response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
                 }
-            }).end(/** todo add payload */);
+            }).end(
+                    new JsonObject()
+                            .put("token", getServerToken())
+                            .put("voting", Serializer.pack(voting))
+                            .encode()
+            );
 
 
         }
