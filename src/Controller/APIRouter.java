@@ -16,7 +16,7 @@ import io.vertx.ext.web.RoutingContext;
  * <p/>
  * Provides a management API to the controller system.
  */
-public class APIRouter {
+class APIRouter {
     private Vertx vertx;
     private AsyncVotingStore votings;
     private TokenFactory serverToken;
@@ -49,12 +49,11 @@ public class APIRouter {
                         throw future.cause();
 
                 } catch (Throwable throwable) {
+                    throwable.printStackTrace();
                     response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
                 }
             });
             votings.create(future, voting);
-        } else {
-            response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
         }
     }
 

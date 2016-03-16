@@ -42,8 +42,8 @@ public class WebServer implements Verticle {
             votings = new VotingDB(
                     MongoClient.createShared(vertx,
                             new JsonObject()
-                                    .put("connection_string", "mongodb://localhost:27017/")
-                                    .put("db_name", "votings")
+                                    .put("connection_string", Configuration.CONNECTION_STRING)
+                                    .put("db_name", Configuration.DB_NAME)
                     )
             );
         }
