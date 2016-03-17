@@ -21,6 +21,7 @@ class APIRouter {
 
     public void register(Router router, AsyncVotingStore votings, AsyncMasterClient client) {
         this.votings = votings;
+        this.client = client;
 
         router.post("/api/create").handler(this::create);
         router.post("/api/terminate").handler(this::terminate);
@@ -101,16 +102,13 @@ class APIRouter {
 
     private void list(RoutingContext context) {
         HttpServerResponse response = context.response();
-        JsonObject request = context.getBodyAsJson();
         Future<VotingList> future = Future.future();
 
         if (authorized(context)) {
-            Token token = (Token) Serializer.unpack(request.getJsonObject("owner"), Token.class);
-
             future.setHandler(result -> {
                 try {
                     if (result.succeeded())
-                        response.setStatusCode(HttpResponseStatus.OK.code()).end();
+                        response.setStatusCode(HttpResponseStatus.OK.code()).end(Serializer.pack(result.result()));
                     else
                         throw result.cause();
 
@@ -118,13 +116,13 @@ class APIRouter {
                     response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
                 }
             });
-            votings.list(future, token.getDomain());
+            votings.list(future, context.getBodyAsJson().getString("owner"));
         }
     }
 
     private boolean authorized(RoutingContext context, Voting voting) {
-        Token token = (Token) Serializer.unpack(context.getBodyAsJson().getJsonObject("owner"), Token.class);
-        return token.getDomain().equals(voting.getOwner()) && authorized(context);
+        String owner = context.getBodyAsJson().getString("owner");
+        return owner.equals(voting.getOwner()) && authorized(context);
     }
 
     private boolean authorized(RoutingContext context) {

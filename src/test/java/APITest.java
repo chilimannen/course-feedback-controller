@@ -1,9 +1,6 @@
 import Configuration.Configuration;
 import Controller.WebServer;
-import Model.Serializer;
-import Model.Token;
-import Model.TokenException;
-import Model.TokenFactory;
+import Model.*;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonArray;
@@ -28,7 +25,8 @@ import java.time.Instant;
 public class APITest {
     private Vertx vertx;
     private TokenFactory tokenFactory;
-    private static final String USERNAME = "usertest";
+    private TokenFactory ownerFactory;
+    private static final String USERNAME = "gosu";
 
     @Rule
     public Timeout timeout = Timeout.seconds(15);
@@ -38,6 +36,7 @@ public class APITest {
         vertx = Vertx.vertx();
         vertx.deployVerticle(new WebServer(new VotingDBMock(), new MasterClientMock()), context.asyncAssertSuccess());
         tokenFactory = new TokenFactory(Configuration.SERVER_SECRET);
+        ownerFactory = new TokenFactory(Configuration.CLIENT_SECRET);
     }
 
     @After
@@ -97,6 +96,7 @@ public class APITest {
                     async.complete();
                 }).end(
                 new JsonObject()
+                        .put("owner", USERNAME)
                         .put("token", getValidToken())
                         .put("voting", getVotingConfiguration())
                         .encode());
@@ -108,13 +108,32 @@ public class APITest {
         Async async = context.async();
 
         vertx.createHttpClient()
-                .post(Configuration.CONTROLLER_PORT, "localhost", "/api/terminate", response -> {
+                .post(Configuration.CONTROLLER_PORT, "localhost", "/api/list", response -> {
                     context.assertEquals(HttpResponseStatus.OK.code(), response.statusCode());
-                    async.complete();
+
+                    response.bodyHandler(body -> {
+                        VotingList votings = (VotingList) Serializer.unpack(body.toJsonObject(), VotingList.class);
+                        Voting voting = votings.getVotings().get(0);
+
+                        context.assertEquals(1, votings.getVotings().size());
+                        context.assertEquals(2, votings.getVotings().get(0).getOptions().size());
+
+                        context.assertEquals("Vote #1", voting.getTopic());
+                        context.assertEquals("id", voting.getId());
+                        context.assertEquals("gosu", voting.getOwner());
+                        context.assertEquals("q1", voting.getOptions().get(0).getName());
+                        context.assertEquals("q2", voting.getOptions().get(1).getName());
+                        context.assertTrue(voting.getOptions().get(0).getValues().contains("a"));
+                        context.assertTrue(voting.getOptions().get(0).getValues().contains("b"));
+                        context.assertTrue(voting.getOptions().get(0).getValues().contains("c"));
+
+                        async.complete();
+                    });
+
                 }).end(
                 new JsonObject()
+                        .put("owner", USERNAME)
                         .put("token", getValidToken())
-                        .put("voting", getVotingConfiguration())
                         .encode());
     }
 
@@ -123,7 +142,7 @@ public class APITest {
         Async async = context.async();
 
         vertx.createHttpClient()
-                .post(Configuration.CONTROLLER_PORT, "localhost", "/api/terminate", response -> {
+                .post(Configuration.CONTROLLER_PORT, "localhost", "/api/create", response -> {
                     context.assertEquals(HttpResponseStatus.UNAUTHORIZED.code(), response.statusCode());
                     async.complete();
                 }).end(
@@ -138,11 +157,12 @@ public class APITest {
         Async async = context.async();
 
         vertx.createHttpClient()
-                .post(Configuration.CONTROLLER_PORT, "localhost", "/api/terminate", response -> {
+                .post(Configuration.CONTROLLER_PORT, "localhost", "/api/list", response -> {
                     context.assertEquals(HttpResponseStatus.UNAUTHORIZED.code(), response.statusCode());
                     async.complete();
                 }).end(
                 new JsonObject()
+                        .put("owner", USERNAME)
                         .put("token", getInvalidToken())
                         .put("voting", getVotingConfiguration())
                         .encode());
@@ -158,6 +178,7 @@ public class APITest {
                     async.complete();
                 }).end(
                 new JsonObject()
+                        .put("owner", USERNAME)
                         .put("token", getInvalidToken())
                         .put("voting", getVotingConfiguration())
                         .encode());

@@ -22,20 +22,20 @@ public class VotingDBMock implements AsyncVotingStore {
 
         options.add(
                 new Query()
-                        .setName("query_name")
+                        .setName("q1")
                         .setValues(values)
         );
 
         options.add(
                 new Query()
-                        .setName("query_name")
+                        .setName("q2")
                         .setValues(values)
         );
 
         votings.add(new Voting()
-                        .setId("unique_id")
-                        .setTopic("voting_name")
-                        .setOwner("me_self")
+                        .setId("id")
+                        .setTopic("Vote #1")
+                        .setOwner("gosu")
                         .setOptions(options)
         );
     }
@@ -55,9 +55,9 @@ public class VotingDBMock implements AsyncVotingStore {
     public void list(Future<VotingList> future, String owner) {
         VotingList list = new VotingList();
 
-        votings.stream()
-                .filter(voting -> voting.getOwner().equals(owner))
-                .forEach(list::add);
+        for (Voting voting : votings)
+            if (voting.getOwner().equals(owner))
+                list.add(voting);
 
         future.complete(list);
     }

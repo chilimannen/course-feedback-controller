@@ -10,4 +10,5 @@ public class Configuration {
     public static final String DB_NAME = "vote";
     public static final String SERVER_NAME = "server.controller";
     public static final byte[] SERVER_SECRET = "!!!!!!!!!!!server_secret!!!!!!!!!!".getBytes();
+    public static final byte[] CLIENT_SECRET = "!!!!!!!!!!!client_secret!!!!!!!!!!".getBytes();
 }
