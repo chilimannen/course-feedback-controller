@@ -38,6 +38,9 @@ public class VotingDB implements AsyncVotingStore {
             if (result.succeeded()) {
                 JsonObject votings = new JsonObject().put("votings", result.result());
                 VotingList list = (VotingList) Serializer.unpack(votings, VotingList.class);
+
+                System.out.println(Serializer.pack(list));
+
                 future.complete(list);
             } else
                 future.fail(result.cause());

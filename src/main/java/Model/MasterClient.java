@@ -20,6 +20,8 @@ public class MasterClient implements AsyncMasterClient {
 
     @Override
     public void create(Future<Void> future, Voting voting) {
+        future.complete();
+        /*
         vertx.createHttpClient().post(Configuration.MASTER_PORT, "localhost", "/api/create", handler -> {
 
             if (handler.statusCode() == HttpResponseStatus.OK.code())
@@ -30,7 +32,7 @@ public class MasterClient implements AsyncMasterClient {
         }).end(new JsonObject()
                 .put("token", getServerToken())
                 .put("voting", Serializer.pack(voting))
-                .encode());
+                .encode());*/
     }
 
     @Override

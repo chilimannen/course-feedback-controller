@@ -36,8 +36,6 @@ class APIRouter {
             Voting voting = (Voting) Serializer.unpack(request.getJsonObject("voting"), Voting.class);
             Future<Void> master = Future.future();
 
-            voting.setOwner(tokenFrom(context).getDomain());
-
             master.setHandler(result -> {
                 try {
                     if (result.succeeded()) {
@@ -55,15 +53,12 @@ class APIRouter {
                         throw master.cause();
 
                 } catch (Throwable throwable) {
+                    throwable.printStackTrace();
                     response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
                 }
             });
             client.create(master, voting);
         }
-    }
-
-    private Token tokenFrom(RoutingContext context) {
-        return (Token) Serializer.unpack(context.getBodyAsJson().getJsonObject("token"), Token.class);
     }
 
 
@@ -92,6 +87,7 @@ class APIRouter {
                         throw result.cause();
 
                 } catch (Throwable throwable) {
+                    throwable.printStackTrace();
                     response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
                 }
             });
@@ -113,6 +109,7 @@ class APIRouter {
                         throw result.cause();
 
                 } catch (Throwable throwable) {
+                    throwable.printStackTrace();
                     response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
                 }
             });

@@ -5,22 +5,22 @@ package Model;
  * Created by Robin on 2016-03-17.
  */
 public class Duration {
-    private int begin;
-    private int end;
+    private long begin;
+    private long end;
 
-    public int getBegin() {
+    public long getBegin() {
         return begin;
     }
 
-    public void setBegin(int begin) {
+    public void setBegin(long begin) {
         this.begin = begin;
     }
 
-    public int getEnd() {
+    public long getEnd() {
         return end;
     }
 
-    public void setEnd(int end) {
+    public void setEnd(long end) {
         this.end = end;
     }
 }
