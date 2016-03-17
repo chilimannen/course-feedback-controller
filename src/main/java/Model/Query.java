@@ -7,7 +7,7 @@ import java.util.ArrayList;
  */
 public class Query {
     private String name;
-    private ArrayList<String> options;
+    private ArrayList<String> values;
 
     public String getName() {
         return name;
@@ -18,12 +18,12 @@ public class Query {
         return this;
     }
 
-    public ArrayList<String> getOptions() {
-        return options;
+    public ArrayList<String> getValues() {
+        return values;
     }
 
-    public Query setOptions(ArrayList<String> options) {
-        this.options = options;
+    public Query setValues(ArrayList<String> values) {
+        this.values = values;
         return this;
     }
 }

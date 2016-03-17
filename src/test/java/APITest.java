@@ -28,6 +28,7 @@ import java.time.Instant;
 public class APITest {
     private Vertx vertx;
     private TokenFactory tokenFactory;
+    private static final String USERNAME = "usertest";
 
     @Rule
     public Timeout timeout = Timeout.seconds(15);
@@ -35,7 +36,7 @@ public class APITest {
     @Before
     public void setUp(TestContext context) {
         vertx = Vertx.vertx();
-        vertx.deployVerticle(new WebServer(new VotingDBMock()), context.asyncAssertSuccess());
+        vertx.deployVerticle(new WebServer(new VotingDBMock(), new MasterClientMock()), context.asyncAssertSuccess());
         tokenFactory = new TokenFactory(Configuration.SERVER_SECRET);
     }
 
@@ -62,20 +63,24 @@ public class APITest {
 
     private JsonObject getVotingConfiguration() {
         return new JsonObject()
-                .put("name", "test-voting")
-                .put("duration", 10)
+                .put("topic", "test-voting")
+                .put("owner", USERNAME)
+                .put("duration",
+                        new JsonObject()
+                                .put("begin", Instant.now().getEpochSecond())
+                                .put("end", Instant.now().getEpochSecond() + 10))
                 .put("options",
                         new JsonArray()
                                 .add(new JsonObject()
                                         .put("name", "query 1")
-                                        .put("answer",
+                                        .put("values",
                                                 new JsonArray()
                                                         .add("value 1")
                                                         .add("value 2")
                                                         .add("value 3")))
                                 .add(new JsonObject()
                                         .put("name", "query 2")
-                                        .put("answer",
+                                        .put("values",
                                                 new JsonArray()
                                                         .add("value a")
                                                         .add("value b")

@@ -1,7 +1,9 @@
 package Controller;
 
 import Configuration.Configuration;
+import Model.AsyncMasterClient;
 import Model.AsyncVotingStore;
+import Model.MasterClient;
 import Model.VotingDB;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
@@ -20,13 +22,15 @@ import io.vertx.ext.web.handler.BodyHandler;
  */
 public class WebServer implements Verticle {
     private AsyncVotingStore votings;
+    private AsyncMasterClient client;
     private Vertx vertx;
 
     public WebServer() {
     }
 
-    public WebServer(AsyncVotingStore votings) {
+    public WebServer(AsyncVotingStore votings, AsyncMasterClient client) {
         this.votings = votings;
+        this.client = client;
     }
 
     @Override
@@ -47,6 +51,10 @@ public class WebServer implements Verticle {
                     )
             );
         }
+
+        if (client == null) {
+            client = new MasterClient(vertx);
+        }
     }
 
     @Override
@@ -56,7 +64,7 @@ public class WebServer implements Verticle {
 
         router.route().handler(BodyHandler.create());
 
-        new APIRouter().register(router, votings, vertx);
+        new APIRouter().register(router, votings, client);
 
         server.requestHandler(router::accept).listen(Configuration.CONTROLLER_PORT);
         future.complete();

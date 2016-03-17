@@ -7,9 +7,18 @@ import java.util.ArrayList;
  */
 public class Voting {
     private String owner;
-    private String name;
+    private String topic;
     private String id;
+    private Duration duration;
     private ArrayList<Query> options;
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
 
     public String getOwner() {
         return owner;
@@ -20,12 +29,12 @@ public class Voting {
         return this;
     }
 
-    public String getName() {
-        return name;
+    public String getTopic() {
+        return topic;
     }
 
-    public Voting setName(String name) {
-        this.name = name;
+    public Voting setTopic(String topic) {
+        this.topic = topic;
         return this;
     }
 

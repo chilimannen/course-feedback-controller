@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Created by Robin on 2016-03-16.
  */
 public class VotingList {
-    private ArrayList<Voting> votings;
+    private ArrayList<Voting> votings = new ArrayList<>();
 
     public ArrayList<Voting> getVotings() {
         return votings;

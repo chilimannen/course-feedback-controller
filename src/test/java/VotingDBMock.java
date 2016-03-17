@@ -23,18 +23,18 @@ public class VotingDBMock implements AsyncVotingStore {
         options.add(
                 new Query()
                         .setName("query_name")
-                        .setOptions(values)
+                        .setValues(values)
         );
 
         options.add(
                 new Query()
                         .setName("query_name")
-                        .setOptions(values)
+                        .setValues(values)
         );
 
         votings.add(new Voting()
                         .setId("unique_id")
-                        .setName("voting_name")
+                        .setTopic("voting_name")
                         .setOwner("me_self")
                         .setOptions(options)
         );
