@@ -22,8 +22,6 @@ public class MasterClient implements AsyncMasterClient {
 
     @Override
     public void create(Future<Void> future, Voting voting) {
-        future.complete();
-
 
         vertx.createHttpClient().post(Configuration.MASTER_PORT, "localhost", "/api/create", handler -> {
 
@@ -40,8 +38,6 @@ public class MasterClient implements AsyncMasterClient {
 
     @Override
     public void terminate(Future<Void> future, Voting voting) {
-        future.complete();
-
 
         vertx.createHttpClient().post(Configuration.MASTER_PORT, "localhost", "/api/terminate", handler -> {
 
