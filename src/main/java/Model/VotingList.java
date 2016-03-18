@@ -3,7 +3,8 @@ package Model;
 import java.util.ArrayList;
 
 /**
- * Created by Robin on 2016-03-16.
+ * @author Robin Duda
+ * Transport object for a list of votings.
  */
 public class VotingList {
     private ArrayList<Voting> votings = new ArrayList<>();

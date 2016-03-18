@@ -18,7 +18,13 @@ import org.junit.runner.RunWith;
 import java.time.Instant;
 
 /**
- * Created by Robin on 2016-03-16.
+ * @author Robin Duda
+ *         <p/>
+ *         Tests the api methods for the controller service.
+ *         <p/>
+ *         /list - list all votings with specified owner.
+ *         /create - create a new voting
+ *         /terminate - remove a voting and everything attached to it.
  */
 
 @RunWith(VertxUnitRunner.class)

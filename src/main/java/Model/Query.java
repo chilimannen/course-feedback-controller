@@ -3,7 +3,9 @@ package Model;
 import java.util.ArrayList;
 
 /**
- * Created by Robin on 2016-03-16.
+ * @author Robin Duda
+ *
+ * An individual question in a vote.
  */
 public class Query {
     private String name;

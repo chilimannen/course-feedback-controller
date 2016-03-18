@@ -3,7 +3,9 @@ import Model.Voting;
 import io.vertx.core.Future;
 
 /**
- * Created by Robin on 2016-03-17.
+ * @author Robin Duda
+ *
+ * A mock of a connection to a set of masters.
  */
 public class MasterClientMock implements AsyncMasterClient {
     @Override

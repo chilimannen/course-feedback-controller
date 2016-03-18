@@ -8,7 +8,9 @@ import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 
 /**
- * Created by Robin on 2016-03-17.
+ * @author Robin Duda
+ *         <p/>
+ *         A client used to communicate with masters.
  */
 public class MasterClient implements AsyncMasterClient {
     private TokenFactory serverToken = new TokenFactory(Configuration.SERVER_SECRET);
@@ -21,7 +23,8 @@ public class MasterClient implements AsyncMasterClient {
     @Override
     public void create(Future<Void> future, Voting voting) {
         future.complete();
-        /*
+
+
         vertx.createHttpClient().post(Configuration.MASTER_PORT, "localhost", "/api/create", handler -> {
 
             if (handler.statusCode() == HttpResponseStatus.OK.code())
@@ -32,11 +35,14 @@ public class MasterClient implements AsyncMasterClient {
         }).end(new JsonObject()
                 .put("token", getServerToken())
                 .put("voting", Serializer.pack(voting))
-                .encode());*/
+                .encode());
     }
 
     @Override
     public void terminate(Future<Void> future, Voting voting) {
+        future.complete();
+
+
         vertx.createHttpClient().post(Configuration.MASTER_PORT, "localhost", "/api/terminate", handler -> {
 
             if (handler.statusCode() == HttpResponseStatus.OK.code())

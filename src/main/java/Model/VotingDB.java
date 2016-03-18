@@ -6,7 +6,7 @@ import io.vertx.ext.mongo.MongoClient;
 
 /**
  * Created by Robin on 2016-03-16.
- *
+ * <p/>
  * Async voting store implementation using MongoDB.
  */
 public class VotingDB implements AsyncVotingStore {
@@ -19,8 +19,8 @@ public class VotingDB implements AsyncVotingStore {
 
 
     @Override
-    public void terminate(Future<Void> future, String owner) {
-        JsonObject query = new JsonObject().put("owner", owner);
+    public void terminate(Future<Void> future, Voting voting) {
+        JsonObject query = new JsonObject().put("owner", voting.getOwner()).put("id", voting.getId());
 
         client.removeOne(COLLECTION, query, result -> {
             if (result.succeeded())
@@ -38,8 +38,6 @@ public class VotingDB implements AsyncVotingStore {
             if (result.succeeded()) {
                 JsonObject votings = new JsonObject().put("votings", result.result());
                 VotingList list = (VotingList) Serializer.unpack(votings, VotingList.class);
-
-                System.out.println(Serializer.pack(list));
 
                 future.complete(list);
             } else

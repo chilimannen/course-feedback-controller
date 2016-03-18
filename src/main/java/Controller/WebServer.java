@@ -16,7 +16,7 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 
 /**
- * Created by Robin on 2016-03-16.
+ * @author Robin Duda
  * <p/>
  * Start up the webserver.
  */

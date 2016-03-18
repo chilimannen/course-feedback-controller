@@ -2,7 +2,9 @@ package Model;
 
 
 /**
- * Created by Robin on 2016-03-17.
+ * @author Robin Duda
+ *
+ * The duration of a vote.
  */
 public class Duration {
     private long begin;

@@ -10,7 +10,7 @@ import io.vertx.core.json.JsonObject;
 import java.io.IOException;
 
 /**
- * Created by Robin on 2015-12-16.
+ * @author Robin Duda
  * <p/>
  * Serializes objects to JSON and back.
  */

@@ -7,7 +7,9 @@ import io.vertx.core.Future;
 import java.util.ArrayList;
 
 /**
- * Created by Robin on 2016-03-16.
+ * @author Robin Duda
+ *         <p/>
+ *         Mock for the voting database.
  */
 public class VotingDBMock implements AsyncVotingStore {
     private ArrayList<Voting> votings = new ArrayList<>();
@@ -41,9 +43,9 @@ public class VotingDBMock implements AsyncVotingStore {
     }
 
     @Override
-    public void terminate(Future<Void> future, String id) {
+    public void terminate(Future<Void> future, Voting voting) {
         for (int i = 0; i < votings.size(); i++) {
-            if (votings.get(i).getId().equals(id)) {
+            if (votings.get(i).getId().equals(voting.getId())) {
                 votings.remove(i);
                 break;
             }

@@ -9,8 +9,10 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 
+import java.util.UUID;
+
 /**
- * Created by Robin on 2016-03-16.
+ * @author Robin Duda
  * <p/>
  * Provides a management API to the controller system.
  */
@@ -35,6 +37,7 @@ class APIRouter {
         if (authorized(context)) {
             Voting voting = (Voting) Serializer.unpack(request.getJsonObject("voting"), Voting.class);
             Future<Void> master = Future.future();
+            voting.setId("x" + UUID.randomUUID().toString());
 
             master.setHandler(result -> {
                 try {
@@ -47,7 +50,6 @@ class APIRouter {
                             else
                                 response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
                         });
-
                         votings.create(storage, voting);
                     } else
                         throw master.cause();
@@ -75,20 +77,20 @@ class APIRouter {
                     if (result.succeeded()) {
                         Future<Void> storage = Future.future();
 
-                        storage.setHandler(terminate -> {
-                            if (terminate.succeeded())
-                                response.setStatusCode(HttpResponseStatus.OK.code()).end();
-                            else
-                                response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
-                        });
+                            storage.setHandler(terminate -> {
+                                if (terminate.succeeded()) {
+                                    response.setStatusCode(HttpResponseStatus.OK.code()).end();
+                                }else
+                                    response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
+                            });
 
-                        votings.terminate(storage, voting.getOwner());
-                    } else
+                            votings.terminate(storage, voting);
+                        }else
                         throw result.cause();
 
-                } catch (Throwable throwable) {
-                    throwable.printStackTrace();
-                    response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
+                    }catch(Throwable throwable){
+                        throwable.printStackTrace();
+                        response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
                 }
             });
             client.terminate(master, voting);
@@ -102,16 +104,12 @@ class APIRouter {
 
         if (authorized(context)) {
             future.setHandler(result -> {
-                try {
-                    if (result.succeeded())
-                        response.setStatusCode(HttpResponseStatus.OK.code()).end(Serializer.pack(result.result()));
-                    else
-                        throw result.cause();
 
-                } catch (Throwable throwable) {
-                    throwable.printStackTrace();
+                if (result.succeeded())
+                    response.setStatusCode(HttpResponseStatus.OK.code()).end(Serializer.pack(result.result()));
+                else
                     response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
-                }
+
             });
             votings.list(future, context.getBodyAsJson().getString("owner"));
         }

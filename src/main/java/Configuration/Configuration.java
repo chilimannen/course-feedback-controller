@@ -1,7 +1,7 @@
 package Configuration;
 
 /**
- * Created by Robin on 2016-03-16.
+ * @author Robin Duda
  */
 public class Configuration {
     public static final int MASTER_PORT = 9494;

@@ -4,7 +4,7 @@ import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 
 /**
- * Created by Robin on 2016-03-16.
+ * @author Robin Duda
  *
  * Application bootstrap.
  */

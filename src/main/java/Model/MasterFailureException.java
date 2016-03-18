@@ -1,7 +1,9 @@
 package Model;
 
 /**
- * Created by Robin on 2016-03-17.
+ * @author Robin Duda
+ *
+ * Throw when a master has failed.
  */
 public class MasterFailureException extends Throwable {
 }

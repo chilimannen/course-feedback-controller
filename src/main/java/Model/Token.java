@@ -3,7 +3,7 @@ package Model;
 import java.time.Instant;
 
 /**
- * Created by Robin on 2015-12-22.
+ * @author Robin Duda
  * <p/>
  * Used to request authentication by token.
  */
