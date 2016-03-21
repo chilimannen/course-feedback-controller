@@ -48,4 +48,8 @@ public abstract class Serializer {
             throw new RuntimeException(e.getMessage());
         }
     }
+
+    public static JsonObject json(Object object) {
+        return new JsonObject(pack(object));
+    }
 }

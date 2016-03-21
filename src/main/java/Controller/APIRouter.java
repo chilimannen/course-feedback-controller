@@ -13,8 +13,8 @@ import java.util.UUID;
 
 /**
  * @author Robin Duda
- * <p/>
- * Provides a management API to the controller system.
+ *         <p>
+ *         Provides a management API to the controller system.
  */
 class APIRouter {
     private TokenFactory serverToken = new TokenFactory(Configuration.SERVER_SECRET);
@@ -40,24 +40,18 @@ class APIRouter {
             voting.setId("x" + UUID.randomUUID().toString());
 
             master.setHandler(result -> {
-                try {
-                    if (result.succeeded()) {
-                        Future<Void> storage = Future.future();
+                if (result.succeeded()) {
+                    Future<Void> storage = Future.future();
 
-                        storage.setHandler(create -> {
-                            if (create.succeeded())
-                                response.setStatusCode(HttpResponseStatus.OK.code()).end();
-                            else
-                                response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
-                        });
-                        votings.create(storage, voting);
-                    } else
-                        throw master.cause();
-
-                } catch (Throwable throwable) {
-                    throwable.printStackTrace();
+                    storage.setHandler(create -> {
+                        if (create.succeeded())
+                            response.setStatusCode(HttpResponseStatus.OK.code()).end();
+                        else
+                            response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
+                    });
+                    votings.create(storage, voting);
+                } else
                     response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
-                }
             });
             client.create(master, voting);
         }
@@ -73,25 +67,19 @@ class APIRouter {
             Future<Void> master = Future.future();
 
             master.setHandler(result -> {
-                try {
                     if (result.succeeded()) {
                         Future<Void> storage = Future.future();
 
-                            storage.setHandler(terminate -> {
-                                if (terminate.succeeded()) {
-                                    response.setStatusCode(HttpResponseStatus.OK.code()).end();
-                                }else
-                                    response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
-                            });
+                        storage.setHandler(terminate -> {
+                            if (terminate.succeeded()) {
+                                response.setStatusCode(HttpResponseStatus.OK.code()).end();
+                            } else
+                                response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
+                        });
 
-                            votings.terminate(storage, voting);
-                        }else
-                        throw result.cause();
-
-                    }catch(Throwable throwable){
-                        throwable.printStackTrace();
+                        votings.terminate(storage, voting);
+                    } else
                         response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
-                }
             });
             client.terminate(master, voting);
         }

@@ -32,7 +32,7 @@ public class MasterClient implements AsyncMasterClient {
 
         }).end(new JsonObject()
                 .put("token", getServerToken())
-                .put("voting", Serializer.pack(voting))
+                .put("voting", Serializer.json(voting))
                 .encode());
     }
 
@@ -49,7 +49,7 @@ public class MasterClient implements AsyncMasterClient {
         }).end(
                 new JsonObject()
                         .put("token", getServerToken())
-                        .put("voting", Serializer.pack(voting))
+                        .put("voting", Serializer.json(voting))
                         .encode()
         );
     }

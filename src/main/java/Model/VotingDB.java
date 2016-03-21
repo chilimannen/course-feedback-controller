@@ -10,7 +10,7 @@ import io.vertx.ext.mongo.MongoClient;
  * Async voting store implementation using MongoDB.
  */
 public class VotingDB implements AsyncVotingStore {
-    private static final String COLLECTION = "voting";
+    private static final String COLLECTION = "controller_metadata";
     private MongoClient client;
 
     public VotingDB(MongoClient client) {

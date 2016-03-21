@@ -66,7 +66,7 @@ public class WebServer implements Verticle {
 
         new APIRouter().register(router, votings, client);
 
-        server.requestHandler(router::accept).listen(Configuration.CONTROLLER_PORT);
+        server.requestHandler(router::accept).listen(Configuration.WEB_PORT);
         future.complete();
     }
 
